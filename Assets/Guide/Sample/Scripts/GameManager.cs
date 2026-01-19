@@ -1,23 +1,26 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+namespace Guide.Sample.Scripts
 {
-    [SerializeField] private PlayerController player;
-    void Awake()
+    public class GameManager : MonoBehaviour
     {
-        Application.targetFrameRate = 60;
-    }
-
-    void Update()
-    {
-        if(player.cleared)
+        [SerializeField] private PlayerController player;
+        void Awake()
         {
-            SceneManager.LoadScene("ClearSample");
+            Application.targetFrameRate = 60;
         }
-        else if(player.death)
+
+        void Update()
         {
-            SceneManager.LoadScene("GameOverSample");
+            if (player.cleared)
+            {
+                SceneManager.LoadScene("ClearSample");
+            }
+            else if (player.death)
+            {
+                SceneManager.LoadScene("GameOverSample");
+            }
         }
     }
 }
