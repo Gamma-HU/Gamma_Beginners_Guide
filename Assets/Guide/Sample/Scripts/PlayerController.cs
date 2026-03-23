@@ -1,66 +1,68 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace Guide.Sample.Scripts
+public class PlayerController : MonoBehaviour
 {
-    public class PlayerController : MonoBehaviour
+    [SerializeField] private Vector2 initPos;
+    [SerializeField] private float speed = 5f;
+
+    private Rigidbody2D rb;
+
+    [HideInInspector]
+    public bool cleared = false;
+    public bool death = false;
+    void Start()
     {
-        [SerializeField] private Vector2 initPos;
-        [SerializeField] private float speed = 5f;
+        this.transform.position = initPos;
+        rb = this.GetComponent<Rigidbody2D>();
+    }
 
-        private Rigidbody2D rb;
+    void Update()
+    {
+        KeyCheck();
+    }
 
-        [HideInInspector]
-        public bool cleared = false;
-        public bool death = false;
-        void Start()
+    private void KeyCheck()
+    {
+        if(Keyboard.current.upArrowKey.isPressed)
         {
-            this.transform.position = initPos;
-            rb = this.GetComponent<Rigidbody2D>();
+            //this.transform.Translate(0, speed, 0);
+            rb.linearVelocity = new Vector2(0, speed);
         }
-
-        void Update()
+        if(Keyboard.current.downArrowKey.isPressed)
         {
-            KeyCheck();
+            //this.transform.Translate(0, -speed, 0);
+            rb.linearVelocity = new Vector2(0, -speed);
         }
-
-        private void KeyCheck()
+        if(Keyboard.current.rightArrowKey.isPressed)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                //this.transform.Translate(0, speed, 0);
-                rb.linearVelocity = new Vector2(0, speed);
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                //this.transform.Translate(0, -speed, 0);
-                rb.linearVelocity = new Vector2(0, -speed);
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                //this.transform.Translate(speed, 0, 0);
-                rb.linearVelocity = new Vector2(speed, 0);
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                //this.transform.Translate(-speed, 0, 0);
-                rb.linearVelocity = new Vector2(-speed, 0);
-            }
-            if (!Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
-            {
-                rb.linearVelocity = Vector2.zero;
-            }
+            //this.transform.Translate(speed, 0, 0);
+            rb.linearVelocity = new Vector2(speed, 0);
         }
-
-        private void OnTriggerEnter2D(Collider2D other)
+        if(Keyboard.current.leftArrowKey.isPressed)
         {
-            if (other.CompareTag("House"))
-            {
-                cleared = true;
-            }
-            else if (other.CompareTag("Enemy"))
-            {
-                death = true;
-            }
+            //this.transform.Translate(-speed, 0, 0);
+            rb.linearVelocity = new Vector2(-speed, 0);
+        }
+        if(!Keyboard.current.upArrowKey.isPressed && !Keyboard.current.downArrowKey.isPressed)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+        }
+        if(!Keyboard.current.rightArrowKey.isPressed && !Keyboard.current.leftArrowKey.isPressed)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("House"))
+        {
+            cleared = true;
+        }
+        else if(other.CompareTag("Enemy"))
+        {
+            death = true;
         }
     }
 }
