@@ -1,68 +1,53 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+namespace GuideSample
 {
-    [SerializeField] private Vector2 initPos;
-    [SerializeField] private float speed = 5f;
-
-    private Rigidbody2D rb;
-
-    [HideInInspector]
-    public bool cleared = false;
-    public bool death = false;
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        this.transform.position = initPos;
-        rb = this.GetComponent<Rigidbody2D>();
-    }
+        [SerializeField] private Vector2 initPos;
+        [SerializeField] private float speed = 5f;
 
-    void Update()
-    {
-        KeyCheck();
-    }
+        private Rigidbody2D rb;
 
-    private void KeyCheck()
-    {
-        if(Keyboard.current.upArrowKey.isPressed)
+        [HideInInspector]
+        public bool cleared = false;
+        public bool death = false;
+        void Start()
         {
-            //this.transform.Translate(0, speed, 0);
-            rb.linearVelocity = new Vector2(0, speed);
+            this.transform.position = initPos;
+            rb = this.GetComponent<Rigidbody2D>();
         }
-        if(Keyboard.current.downArrowKey.isPressed)
-        {
-            //this.transform.Translate(0, -speed, 0);
-            rb.linearVelocity = new Vector2(0, -speed);
-        }
-        if(Keyboard.current.rightArrowKey.isPressed)
-        {
-            //this.transform.Translate(speed, 0, 0);
-            rb.linearVelocity = new Vector2(speed, 0);
-        }
-        if(Keyboard.current.leftArrowKey.isPressed)
-        {
-            //this.transform.Translate(-speed, 0, 0);
-            rb.linearVelocity = new Vector2(-speed, 0);
-        }
-        if(!Keyboard.current.upArrowKey.isPressed && !Keyboard.current.downArrowKey.isPressed)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
-        }
-        if(!Keyboard.current.rightArrowKey.isPressed && !Keyboard.current.leftArrowKey.isPressed)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-        }
-    }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if(other.CompareTag("House"))
+        void Update()
         {
-            cleared = true;
+            KeyCheck();
         }
-        else if(other.CompareTag("Enemy"))
+
+        private void KeyCheck()
         {
-            death = true;
+            float x = 0f;
+            float y = 0f;
+
+            if (Keyboard.current.rightArrowKey.isPressed) x += 1f;
+            if (Keyboard.current.leftArrowKey.isPressed) x -= 1f;
+            if (Keyboard.current.upArrowKey.isPressed) y += 1f;
+            if (Keyboard.current.downArrowKey.isPressed) y -= 1f;
+
+            Vector2 input = new Vector2(x, y).normalized; // 斜め移動が速くなりすぎない
+            rb.linearVelocity = input * speed;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag("House"))
+            {
+                cleared = true;
+            }
+            else if (other.CompareTag("Enemy"))
+            {
+                death = true;
+            }
         }
     }
 }
