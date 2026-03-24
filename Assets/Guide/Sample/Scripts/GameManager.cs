@@ -6,10 +6,6 @@ namespace GuideSample
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private PlayerController player;
-        void Awake()
-        {
-            Application.targetFrameRate = 60;
-        }
 
         void Update()
         {
